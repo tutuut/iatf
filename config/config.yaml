@@ -2,6 +2,6 @@ database:
   hostname: 47.114.130.18
   port: 3306
   user: root
-  pwd: Aliyun124578;.
+  pwd: 
   db: test
 

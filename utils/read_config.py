@@ -1,8 +1,11 @@
 import yaml
+import os
 
+pardir = os.path.dirname(__file__)
+config_path = pardir + '/../config/config.yaml'
 
 class ReadConfig():
-    def __init__(self, yaml_file = '../config/config.yaml'):
+    def __init__(self, yaml_file = config_path):
         self.yaml_file = yaml_file
         self.configs = self._read_yaml()
 
@@ -31,8 +34,10 @@ class ReadConfig():
             yaml.dump(data, stream=f, allow_unicode=True)
 
 if __name__ == '__main__':
-    read_config = ReadConfig('../config/config.yaml')
+    read_config = ReadConfig()
     print(read_config.config('database.hostname.user'))
-    read_config.config('2.3')
-    read_config.config('database.port')
+
+    # print(config_path)
+    # read_config.config('2.3')
+    # read_config.config('database.port')
     # read_config.write_yaml()

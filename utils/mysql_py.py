@@ -1,19 +1,50 @@
 import pymysql
-from iatf.iatf.utils.help import *
-class My_pymysql():
-    def __init__(self,host,user,pwd,db,port):
-        self.host = host
-        self.user = user
-        self.pwd = pwd
-        self.db = db
-        self.port = port
+from iatf.iatf.utils.read_config import ReadConfig
+configs = ReadConfig()
 
-    def connect(self):
+
+class My_pymysql():
+    def __init__(self):
+        self.host = configs.config('database.hostname')
+        self.user = configs.config('database.user')
+        self.pwd = configs.config('database.pwd')
+        self.db = configs.config('database.db')
+        self.port = configs.config('database.port')
+        self._connect()
+
+    def _connect(self):
         try:
             self.conn = pymysql.connect(self.host,self.user,self.pwd,self.db,self.port)
             self.cur = self.conn.cursor()
         except pymysql.MySQLError as e:
             print(e)
+
+    def table(self, table_name):
+        '''
+        :param table_name: 表名
+        :return:
+        '''
+        self.table_name = table_name
+        return self
+
+    def field(self, field_name):
+        '''
+        :param field_name: 字段
+        :return:
+        '''
+        self.field_name = field_name
+        return self
+
+    def where(self, field, option, param):
+        '''
+        :param where_name: 条件
+        :return:
+        '''
+        sql = 'select {} from {} where {} {} %s'.format(self.field_name,self.table_name,field,option)
+        self.cur.execute(sql, [param])
+        res = self.cur.fetchone()
+        print(sql)
+        return res[0]
 
     def select_one(self,sql,params=None):
         try:
@@ -65,7 +96,15 @@ class My_pymysql():
         self.cur.close()
         self.conn.close()
 
-# if __name__ == '__main__':
+if __name__ == '__main__':
+    try:
+        db = My_pymysql()
+        # res = db.select_all('select * from statistics')
+        # print(res)
+        res = db.table('t_student_info').field('studentname').where('id','>','1001')
+        print(res)
+    except Exception as e:
+        print(e)
 #     try:
 #         db = My_pymysql('192.168.31.194','root','root','test',3306)
 #         res = db.connect()
@@ -103,12 +142,12 @@ class My_pymysql():
 #             list_1[j],list_1[j+1] = list_1[j+1],list_1[j]
 # print(list_1)
 
-class MyClass:
-    __secret_value = 1
-    _secret_value1 = 1
-
-    def __secter_method(self):
-        return '私有方法！'
+# class MyClass:
+#     __secret_value = 1
+#     _secret_value1 = 1
+#
+#     def __secter_method(self):
+#         return '私有方法！'
 # instance_of = MyClass()
 # print(instance_of.__secret_value)
 # print(instance_of._secret_value1)
