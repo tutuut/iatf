@@ -4,3 +4,14 @@ database:
   user: root
   pwd:
   db: test
+
+smtp:
+  smtpserver: smtp.qq.com
+  port: 587
+  timeout: 10
+  username: smtp账号
+  password: 授权码
+  sender: xxx@qq.com
+  receivers:
+    - xxx@163.com
+    - xxx@qq.com
